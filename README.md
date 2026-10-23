@@ -186,5 +186,5 @@ Dashboard satu halaman berisi KPI (Total User dan Revenue), funnel, tren bulanan
 **Fatih Putra M.**
 Aspiring Data Analyst
 
-- LinkedIn: linkedin.com/in/fatihputramaulana/
+- LinkedIn: https://www.linkedin.com/in/fatihputramaulana/
 - Email: fatihpm56@gmail.com
