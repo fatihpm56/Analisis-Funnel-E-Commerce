@@ -1,182 +1,182 @@
-# 🛒 Analisis Funnel E-commerce Elektronik
+# 🛒 E-commerce Funnel Analysis
 
-**Dari 407 Ribu Pengunjung Menjadi Pembeli: Analisis Funnel Konversi E-commerce Elektronik**
+**From 407K Visitors to Buyers: A Conversion Funnel Analysis of an Electronics E-commerce Store**
 
-Periode data: 24 September 2020 – 28 Februari 2021 | Tools: Python (Google Colab), Power BI
+Data period: September 24, 2020 – February 28, 2021 | Tools: Python (Google Colab), Power BI
 
-<img width="1225" height="733" alt="Dashboard Analisis Funnel E-commerce" src="https://github.com/user-attachments/assets/58d2cc58-0130-42d1-9cd8-bd63603a9b82" />
+<img width="1225" height="733" alt="Dashboard Analisis Funnel E-commerce" src="https://github.com/user-attachments/assets/67a76123-77e4-4f40-83b1-cfba1ca1ac87" />
 
 ---
 
-## 📑 Daftar Isi
+## 📑 Table of Contents
 
 1. [Project Background](#1-project-background)
-2. [Problem Statement, Tujuan Analisis, dan Business Problem](#2-problem-statement-tujuan-analisis-dan-business-problem)
-3. [Analisis](#3-analisis)
+2. [Problem Statement, Analysis Objectives, and Business Problem](#2-problem-statement-analysis-objectives-and-business-problem)
+3. [Analysis](#3-analysis)
    - [Data Understanding](#31-data-understanding)
    - [Data Preprocessing](#32-data-preprocessing)
-   - [Analysis and Insight](#33-analysis-and-insight)
+   - [Analysis and Insights](#33-analysis-and-insights)
 4. [Recommendations and Actionable Insights](#4-recommendations-and-actionable-insights)
 5. [Tech Stack](#5-tech-stack)
-6. [Struktur Repository](#6-struktur-repository)
+6. [Repository Structure](#6-repository-structure)
 7. [Author](#7-author)
 
 ---
 
 ## 1. Project Background
 
-Toko online elektronik dan komputer ini mencatat **±884 ribu event perilaku pengguna** (view, cart, purchase) dari **407 ribu pengguna unik** selama 5 bulan (24 September 2020 – 28 Februari 2021). Trafik yang besar belum otomatis menjadi pendapatan: sebagian besar pengunjung berhenti di tengah perjalanan belanja mereka.
+This online electronics and computer store recorded **~884K user behavior events** (view, cart, purchase) from **407K unique users** over 5 months (September 24, 2020 – February 28, 2021). Large traffic does not automatically translate into revenue: most visitors drop off partway through their shopping journey.
 
-Project ini mengubah data perilaku pengguna menjadi keputusan bisnis yang dapat menaikkan konversi dan pendapatan, **tanpa perlu menambah biaya akuisisi trafik**.
+This project turns user behavior data into business decisions that can increase conversion and revenue **without increasing traffic acquisition costs**.
 
-**Hasil yang diharapkan**
-- Titik kebocoran (*drop-off*) pada funnel teridentifikasi.
-- Insight yang dapat langsung ditindaklanjuti.
-- Dashboard interaktif untuk pemantauan berkelanjutan.
+**Expected outcomes**
+- Funnel drop-off points are identified.
+- Insights that can be acted on directly.
+- An interactive dashboard for ongoing monitoring.
 
-**Penerima manfaat:** tim marketing, tim katalog & merchandising, serta manajemen e-commerce.
+**Beneficiaries:** the marketing team, the catalog & merchandising team, and e-commerce management.
 
-| 407 rb | 884 rb | 5 bulan | 5,13 juta |
+| 407K | 884K | 5 months | 5.13M |
 |:--:|:--:|:--:|:--:|
-| pengguna unik | event setelah dibersihkan | 24 Sep 2020 – 28 Feb 2021 | total revenue |
+| unique users | events after cleaning | Sep 24, 2020 – Feb 28, 2021 | total revenue |
 
 ---
 
-## 2. Problem Statement, Tujuan Analisis, dan Business Problem
+## 2. Problem Statement, Analysis Objectives, and Business Problem
 
 ### Problem Statement
-Toko online menarik traffic yang besar, tetapi hanya **5,2% pengguna unik** yang akhirnya membeli dan hanya **4,7% aktivitas view** yang berujung transaksi. Funnel menunjukkan kebocoran terbesar terjadi di tahap awal: hanya **6,8% view** yang berlanjut ke cart, padahal **±69% cart** berhasil menjadi pembelian. Artinya, pengunjung yang sudah memasukkan produk ke keranjang cenderung serius membeli, sedangkan sebagian besar pengunjung belum tertarik atau belum yakin untuk melangkah ke keranjang.
+The online store attracts large traffic, but only **5.2% of unique users** end up making a purchase, and only **4.7% of product views** result in a transaction. The funnel shows that the biggest leakage happens at the early stage: only **6.8% of views** move on to cart, while **~69% of carts** are successfully converted into purchases. In other words, visitors who have added a product to their cart tend to be serious buyers, while most visitors are not yet interested or confident enough to take the step to the cart.
 
-### Tujuan Analisis
-Menganalisis perilaku pengguna di sepanjang funnel (*view → cart → purchase*) untuk:
-- mengidentifikasi **di mana dan mengapa** pengguna berhenti,
-- mengetahui **kategori, brand, harga, dan waktu** mana yang konversinya tinggi atau rendah,
-- menentukan **langkah paling efektif** untuk meningkatkan konversi dan pendapatan.
+### Analysis Objectives
+Analyze user behavior across the funnel (*view → cart → purchase*) to:
+- identify **where and why** users drop off,
+- find which **categories, brands, price ranges, and times** have high or low conversion,
+- determine the **most effective actions** to increase conversion and revenue.
 
 ### Business Problem
 | | |
 |---|---|
-| **Masalah** | Hanya 5,2% pengguna yang pernah membeli; 4,7% view berakhir transaksi; ±50% produk di keranjang tidak dibeli. Pendapatan juga bergantung pada satu kategori (*computers* ±73%). |
-| **Mengapa penting** | Perbaikan kecil di funnel langsung berdampak ke pendapatan tanpa menambah biaya akuisisi trafik. |
-| **Dampak jika terpecahkan** | Prioritas perbaikan jelas, promosi tepat sasaran, dan ketergantungan pada satu kategori berkurang. |
+| **Problem** | Only 5.2% of users have ever purchased; 4.7% of views end in a transaction; ~50% of products in carts are not bought. Revenue also depends heavily on a single category (*computers*, ~73%). |
+| **Why it matters** | Small improvements in the funnel directly impact revenue without adding traffic acquisition cost. |
+| **Impact if solved** | Clear improvement priorities, better-targeted promotions, and reduced dependence on a single category. |
 
 ### Business Questions
-1. Di tahap mana funnel conversion drop, dan kategori mana yang konversinya paling lemah?
-2. Bagaimana harga memengaruhi keputusan pengguna, baik untuk memasukkan produk ke keranjang maupun untuk membeli?
-3. Kapan (jam dan bulan) konversi paling tinggi dan paling rendah, dan bagaimana tren konversinya?
-4. Brand mana yang paling efektif mengubah view menjadi pembelian, dan brand mana yang trafiknya tinggi tetapi konversinya rendah?
+1. At which funnel stage does conversion drop, and which category has the weakest conversion?
+2. How does price influence user decisions, both for adding a product to the cart and for buying it?
+3. When (hour and month) is conversion highest and lowest, and what is the conversion trend?
+4. Which brands are most effective at turning views into purchases, and which have high traffic but low conversion?
 
 ---
 
-## 3. Analisis
+## 3. Analysis
 
 ### 3.1 Data Understanding
 
-**Sumber:** `events.csv`, log aktivitas situs yang dicatat otomatis per event.
+**Source:** `events.csv`, a website activity log recorded automatically per event.
 
-| Aspek | Keterangan |
+| Aspect | Description |
 |---|---|
-| Ukuran data | 885.129 baris × 9 kolom |
-| Kolom | `event_time`, `event_type`, `product_id`, `category_id`, `category_code`, `brand`, `price`, `user_id`, `user_session` |
-| Jenis event | `view`, `cart`, `purchase` |
-| Cakupan | ±407 ribu pengguna, ±53 ribu produk, ±490 ribu sesi |
-| Periode | 24 Sep 2020 – 28 Feb 2021 |
-| Zona waktu | UTC |
+| Size | 885,129 rows × 9 columns |
+| Columns | `event_time`, `event_type`, `product_id`, `category_id`, `category_code`, `brand`, `price`, `user_id`, `user_session` |
+| Event types | `view`, `cart`, `purchase` |
+| Coverage | ~407K users, ~53K products, ~490K sessions |
+| Period | Sep 24, 2020 – Feb 28, 2021 |
+| Time zone | UTC |
 
-**Kualitas data yang ditemukan**
-- **655 baris duplikat**
-- **162 baris** tanpa `user_session`
-- `category_code` kosong ±27% dan `brand` kosong ±24%
-- Harga ekstrem (maksimum 64.771)
+**Data quality issues found**
+- **655 duplicate rows**
+- **162 rows** with missing `user_session`
+- `category_code` missing in ~27% of rows and `brand` in ~24%
+- Extreme prices (maximum 64,771)
 
 ### 3.2 Data Preprocessing
 
-| No | Langkah | Keterangan |
+| No | Step | Description |
 |---|---|---|
-| 1 | Hapus duplikat | 655 baris duplikat dibuang |
-| 2 | Konversi waktu | `event_time` diubah ke datetime (UTC) |
-| 3 | Tangani missing value | Baris tanpa `user_session` dihapus; `category_code` dan `brand` kosong diisi `unknown` |
-| 4 | Pecah kategori bertingkat | `category_code` dipecah menjadi `cat1`, `cat2`, `cat3` |
-| 5 | Feature engineering waktu | Dibuat kolom `date`, `month`, `hour`, `dow` (hari) |
-| 6 | Ubah tipe ID | `product_id`, `category_id`, `user_id` dijadikan string |
-| 7 | Tandai outlier harga | Harga di atas persentil 99,9 ditandai (`is_outlier_price`), **tidak dibuang** agar revenue tidak bias |
-| 8 | Simpan data bersih | Hasil akhir **884.312 baris** |
+| 1 | Remove duplicates | 655 duplicate rows dropped |
+| 2 | Convert time | `event_time` converted to datetime (UTC) |
+| 3 | Handle missing values | Rows without `user_session` dropped; missing `category_code` and `brand` filled with `unknown` |
+| 4 | Split hierarchical category | `category_code` split into `cat1`, `cat2`, `cat3` |
+| 5 | Time feature engineering | Created `date`, `month`, `hour`, `dow` (day of week) columns |
+| 6 | Convert ID types | `product_id`, `category_id`, `user_id` cast to string |
+| 7 | Flag price outliers | Prices above the 99.9th percentile flagged (`is_outlier_price`), **not removed**, to avoid biasing revenue |
+| 8 | Save clean data | Final dataset of **884,312 rows** |
 
-> **Catatan:** September 2020 hanya berisi data sejak 24 September, sehingga bulan tersebut parsial dan tidak layak dibandingkan langsung dengan bulan lain.
+> **Note:** September 2020 only contains data from September 24 onward, so that month is partial and not directly comparable to other months.
 
-### 3.3 Analysis and Insight
+### 3.3 Analysis and Insights
 
-**Teknik:** analisis deskriptif dan eksploratif (funnel, kategori, harga, brand, pola waktu). Rumus konversi yang dipakai:
+**Technique:** descriptive and exploratory analysis (funnel, category, price, brand, time patterns). Conversion formulas used:
 
-- **View → Cart (v2c)** = jumlah cart / jumlah view
-- **Cart → Purchase (c2p)** = jumlah purchase / jumlah cart
-- **View → Purchase (v2p)** = jumlah purchase / jumlah view
+- **View → Cart (v2c)** = cart count / view count
+- **Cart → Purchase (c2p)** = purchase count / cart count
+- **View → Purchase (v2p)** = purchase count / view count
 
-#### 🔹 Funnel dan Kategori
-- Dari **406,82 ribu** pengguna yang melihat produk, hanya **36,95 ribu (9,1%)** yang menambah ke keranjang dan **21,30 ribu (5,2%)** yang akhirnya membeli.
-- Secara event: 792,94 ribu view → 54,03 ribu cart → 37,34 ribu purchase. **View → purchase hanya 4,7%.**
-- **Kebocoran terbesar terjadi di tahap view → cart.**
-- Kategori dengan v2c terlemah: **apparel (0,85%)**, **country_yard (1,37%)**, dan **medicine (2,79%)**.
-- Kategori di atas rata-rata: **computers (9,89%)** dan **stationery (8,79%)**; di bawah rata-rata: electronics (5,84%), furniture (5,04%), construction (4,75%).
+#### 🔹 Funnel and Category
+- Of **406.82K** users who viewed products, only **36.95K (9.1%)** added to cart and **21.30K (5.2%)** ultimately purchased.
+- By events: 792.94K views → 54.03K carts → 37.34K purchases. **View → purchase is only 4.7%.**
+- **The biggest drop occurs at the view → cart stage.**
+- Categories with the weakest v2c: **apparel (0.85%)**, **country_yard (1.37%)**, and **medicine (2.79%)**.
+- Above-average categories: **computers (9.89%)** and **stationery (8.79%)**; below average: electronics (5.84%), furniture (5.04%), construction (4.75%).
 
-#### 🔹 Pengaruh Harga
-Harga dibagi menjadi 5 *bucket* (kuintil): <21, 21–47, 47–96, 96–227, >227.
+#### 🔹 Price Effect
+Prices were divided into 5 buckets (quintiles): <21, 21–47, 47–96, 96–227, >227.
 
-| Rentang harga | View → Cart | Cart → Purchase |
+| Price range | View → Cart | Cart → Purchase |
 |---|:--:|:--:|
-| 1. Sangat murah (<21) | 5,75% | 79,00% |
-| 2. Murah (21–47) | 6,40% | 81,03% |
-| 3. Menengah (47–96) | 5,88% | 69,75% |
-| 4. Mahal (96–227) | 7,46% | 65,98% |
-| 5. Sangat mahal (>227) | 8,63% | 55,63% |
+| 1. Very cheap (<21) | 5.75% | 79.00% |
+| 2. Cheap (21–47) | 6.40% | 81.03% |
+| 3. Medium (47–96) | 5.88% | 69.75% |
+| 4. Expensive (96–227) | 7.46% | 65.98% |
+| 5. Very expensive (>227) | 8.63% | 55.63% |
 
-**Insight:** semakin mahal produk, semakin sering dimasukkan ke keranjang, tetapi semakin jarang dibeli. Hambatan produk mahal ada pada **keputusan akhir (checkout)**, bukan pada minat.
+**Insight:** the more expensive a product, the more often it is added to the cart, but the less often it is bought. The barrier for expensive products lies in the **final decision (checkout)**, not in interest.
 
-#### 🔹 Pola Waktu
-- Konversi view → purchase memuncak sekitar **pukul 10.00 UTC (5,38%)** dan terendah pada **pukul 01.00 UTC (3,61%)**.
-- Sore hari trafik tinggi tetapi konversi menurun.
-- **Tren bulanan naik stabil** dari **4,29% (Okt 2020)** menjadi **5,17% (Feb 2021)**.
+#### 🔹 Time Patterns
+- View → purchase conversion peaks at around **10:00 UTC (5.38%)** and is lowest at **01:00 UTC (3.61%)**.
+- In the afternoon, traffic is high but conversion declines.
+- **The monthly trend rises steadily** from **4.29% (Oct 2020)** to **5.17% (Feb 2021)**.
 
 #### 🔹 Brand
-- **Paling efektif:** sapphire (v2p 11,44%), msi (8,97%), gigabyte (7,65%). msi juga menghasilkan revenue tertinggi di antara brand yang terdata (±643 ribu).
-- **Trafik tinggi, konversi rendah:** asus (24 ribu view, v2p 5,20%) dan palit (21 ribu view, v2p 5,02%, c2p hanya 48,06%).
-- Brand **unknown** menyumbang ±190 ribu view (terbesar) dengan v2p 5,00%, sehingga banyak produk sulit dianalisis dan dioptimalkan.
+- **Most effective:** sapphire (v2p 11.44%), msi (8.97%), gigabyte (7.65%). msi also generates the highest revenue among identified brands (~643K).
+- **High traffic, low conversion:** asus (24K views, v2p 5.20%) and palit (21K views, v2p 5.02%, c2p only 48.06%).
+- The **unknown** brand accounts for ~190K views (the largest share) with v2p of 5.00%, making many products hard to analyze and optimize.
 
-#### 🔹 Dashboard Power BI
-Dashboard satu halaman berisi KPI (Total User dan Revenue), funnel, tren bulanan, pola per jam, konversi per harga, kategori, dan brand. Dilengkapi filter **Brand, Category, DayName, dan Month** untuk menelusuri segmen.
+#### 🔹 Power BI Dashboard
+A one-page dashboard containing KPIs (Total Users and Revenue), funnel, monthly trend, hourly pattern, conversion by price, category, and brand. It includes **Brand, Category, DayName, and Month** filters to drill into segments.
 
 ---
 
 ## 4. Recommendations and Actionable Insights
 
-| No | Rekomendasi | Aksi | Target / Dampak |
+| No | Recommendation | Action | Target / Impact |
 |:--:|---|---|---|
-| 1 | **Perbaiki halaman produk** | Lengkapi foto, spesifikasi, dan ulasan pada kategori di bawah rata-rata (electronics, furniture, construction, juga apparel dan country_yard); sertakan datanya di tampilan | View → cart naik dari 6,8% menjadi 7,5% |
-| 2 | **Tangani produk mahal** | Tawarkan cicilan, garansi, gratis ongkir, dan pengingat keranjang (*abandoned cart reminder*) | Cart → purchase rentang termahal naik dari 56% menjadi 65% |
-| 3 | **Jadwalkan promosi sesuai pola waktu** | Pusatkan kampanye, flash sale, dan notifikasi pada **pukul 09.00–11.00 UTC**; gunakan promo berbatas waktu di sore hari; kurangi iklan dini hari | Promosi lebih efisien dan tepat sasaran |
-| 4 | **Kelola portofolio brand** | Jaga stok dan harga msi, gigabyte, sapphire; selidiki penyebab c2p rendah pada palit; tinjau brand dengan konversi lemah seperti asus | Perkuat brand efektif, benahi yang lemah |
-| 5 | **Rapikan data katalog** | Wajibkan pengisian brand dan kategori (±seperempat data kosong) | Analisis dan rekomendasi produk lebih akurat |
+| 1 | **Improve product pages** | Complete photos, specifications, and reviews for below-average categories (electronics, furniture, construction, plus apparel and country_yard); fill in missing catalog data so it displays | View → cart up from 6.8% to 7.5% |
+| 2 | **Address expensive products** | Offer installments, warranty, free shipping, and abandoned cart reminders | Cart → purchase in the most expensive range up from 56% to 65% |
+| 3 | **Schedule promotions by time pattern** | Concentrate campaigns, flash sales, and notifications at **09:00–11:00 UTC**; use time-limited promos in the afternoon; reduce ads in the early morning | More efficient and better-targeted promotions |
+| 4 | **Manage the brand portfolio** | Maintain stock and pricing for msi, gigabyte, sapphire; investigate the cause of palit's low c2p; review weak-converting brands such as asus | Strengthen effective brands, fix weak ones |
+| 5 | **Clean up catalog data** | Make brand and category fields mandatory (~a quarter of data is empty) | More accurate analysis and recommendations |
 
-**Dampak bisnis:** prioritas perbaikan menjadi jelas, promosi lebih tepat sasaran, dan ketergantungan pada satu kategori (*computers* ±73% revenue) dapat dikurangi.
+**Business impact:** improvement priorities become clear, promotions are better targeted, and dependence on a single category (*computers*, ~73% of revenue) can be reduced.
 
 ---
 
 ## 5. Tech Stack
 
-- **Python** (Pandas, NumPy, Matplotlib, Seaborn, Plotly) di Google Colab, untuk cleaning dan EDA
-- **Power BI**, untuk dashboard interaktif
-- **PowerPoint**, untuk presentasi hasil
+- **Python** (Pandas, NumPy, Matplotlib, Seaborn, Plotly) on Google Colab, for cleaning and EDA
+- **Power BI**, for the interactive dashboard
+- **PowerPoint**, for presenting results
 
 ---
 
-## 6. Struktur Repository
+## 6. Repository Structure
 
 ```
 ├── README.md
-├── Analisis_Funnel_E_Commerce.ipynb        # Notebook cleaning & EDA
-├── Analisis_Funnel_Ecommerce_Fatih.pptx    # Slide presentasi
-├── Dashboard_Analisis_Funnel_E-commerce.png # Preview dashboard
-└── data/                                   # (opsional) events.csv
+├── Analisis_Funnel_E_Commerce.ipynb         # Cleaning & EDA notebook
+├── Analisis_Funnel_Ecommerce_Fatih.pptx     # Presentation slides
+├── Dashboard_Analisis_Funnel_E-commerce.png # Dashboard preview
+└── data/                                    # (optional) events.csv
 ```
 
 ---
@@ -184,7 +184,7 @@ Dashboard satu halaman berisi KPI (Total User dan Revenue), funnel, tren bulanan
 ## 7. Author
 
 **Fatih Putra M.**
-Aspiring Data Analyst
+Fresh Graduate in Geophysical Engineering (ITERA) | Aspiring Data Analyst
 
 - LinkedIn: https://www.linkedin.com/in/fatihputramaulana/
 - Email: fatihpm56@gmail.com
