@@ -1,130 +1,190 @@
-# 🎧 Spotify Campaign A/B Test Analysis
+# 🛒 E-commerce Funnel Analysis
+
+**From 407K Visitors to Buyers: A Conversion Funnel Analysis of an Electronics E-commerce Store**
+
+Data period: September 24, 2020 – February 28, 2021 | Tools: Python (Google Colab), Power BI
+
+<img width="1225" height="733" alt="Dashboard Analisis Funnel E-commerce" src="https://github.com/user-attachments/assets/67a76123-77e4-4f40-83b1-cfba1ca1ac87" />
+
+---
+
+## 📑 Table of Contents
+
+1. [Project Background](#1-project-background)
+2. [Problem Statement, Analysis Objectives, and Business Problem](#2-problem-statement-analysis-objectives-and-business-problem)
+3. [Analysis](#3-analysis)
+   - [Data Understanding](#31-data-understanding)
+   - [Data Preprocessing](#32-data-preprocessing)
+   - [Analysis and Insights](#33-analysis-and-insights)
+4. [Recommendations and Actionable Insights](#4-recommendations-and-actionable-insights)
+5. [Tech Stack](#5-tech-stack)
+6. [Repository Structure](#6-repository-structure)
+7. [Author](#7-author)
+
+---
 
 ## 1. Project Background
 
-A music streaming platform developed a new personalization feature/algorithm intended to make the listening experience more relevant to each user. Before rolling it out to everyone, the team ran an A/B test comparing the new experience (**Target**) against the existing one (**Control**) on 100,000 users, split evenly at 50,000 per group.
+This online electronics and computer store recorded **~884K user behavior events** (view, cart, purchase) from **407K unique users** over 5 months (September 24, 2020 – February 28, 2021). Large traffic does not automatically translate into revenue: most visitors drop off partway through their shopping journey.
 
-After the test, the feature was assumed to be fully implemented on 8 March 2026. Daily Total Users data from 1–15 March 2026 was then used to check whether the real-world impact matched the experiment results.
+This project turns user behavior data into business decisions that can increase conversion and revenue **without increasing traffic acquisition costs**.
+
+**Expected outcomes**
+- Funnel drop-off points are identified.
+- Insights that can be acted on directly.
+- An interactive dashboard for ongoing monitoring.
+
+**Beneficiaries:** the marketing team, the catalog & merchandising team, and e-commerce management.
+
+| 407K | 884K | 5 months | 5.13M |
+|:--:|:--:|:--:|:--:|
+| unique users | events after cleaning | Sep 24, 2020 – Feb 28, 2021 | total revenue |
+
+---
 
 ## 2. Problem Statement, Analysis Objectives, and Business Problem
 
-**Business Problem**
-Should the company adopt the new personalization feature for all users? Rolling out a change that does not work wastes engineering effort and risks hurting user experience, while skipping one that does work means lost revenue.
+### Problem Statement
+The online store attracts large traffic, but only **5.2% of unique users** end up making a purchase, and only **4.7% of product views** result in a transaction. The funnel shows that the biggest leakage happens at the early stage: only **6.8% of views** move on to cart, while **~69% of carts** are successfully converted into purchases. In other words, visitors who have added a product to their cart tend to be serious buyers, while most visitors are not yet interested or confident enough to take the step to the cart.
 
-**Problem Statement**
-Does the Target variant produce a statistically and practically significant improvement over Control in engagement, listening duration, payment conversion, and Premium upgrades? Does the improvement carry over after full implementation?
+### Analysis Objectives
+Analyze user behavior across the funnel (*view → cart → purchase*) to:
+- identify **where and why** users drop off,
+- find which **categories, brands, price ranges, and times** have high or low conversion,
+- determine the **most effective actions** to increase conversion and revenue.
 
-**Analysis Objectives**
-1. Test whether Target outperforms Control on four metrics: Engagement, Duration Played, Payment Rate, and Premium Rate.
-2. Measure effect size to judge business relevance, not only statistical significance.
-3. Check whether the conversion lift is driven by subscription-tier composition (confounding).
-4. Monitor Total Users after implementation to validate the A/B test result.
-5. Provide a data-backed rollout recommendation.
+### Business Problem
+| | |
+|---|---|
+| **Problem** | Only 5.2% of users have ever purchased; 4.7% of views end in a transaction; ~50% of products in carts are not bought. Revenue also depends heavily on a single category (*computers*, ~73%). |
+| **Why it matters** | Small improvements in the funnel directly impact revenue without adding traffic acquisition cost. |
+| **Impact if solved** | Clear improvement priorities, better-targeted promotions, and reduced dependence on a single category. |
 
-**Hypotheses** (α = 5%)
-- H0: There is no difference in the mean/proportion of the metric between Target and Control.
-- H1: The mean/proportion of the metric is higher in Target than in Control.
+### Business Questions
+1. At which funnel stage does conversion drop, and which category has the weakest conversion?
+2. How does price influence user decisions, both for adding a product to the cart and for buying it?
+3. When (hour and month) is conversion highest and lowest, and what is the conversion trend?
+4. Which brands are most effective at turning views into purchases, and which have high traffic but low conversion?
+
+---
 
 ## 3. Analysis
 
 ### 3.1 Data Understanding
 
-| Item | Detail |
+**Source:** `events.csv`, a website activity log recorded automatically per event.
+
+| Aspect | Description |
 |---|---|
-| Experiment dataset | `spotify_campaign_data.csv`, 100,000 users (50,000 Control, 50,000 Target) |
-| Monitoring dataset | `AB_Test_Post_Implement.csv`, daily Total Users, 1–15 March 2026 |
-| Randomization unit | Per user, to avoid cross-group contamination |
-| Primary metric | Payment Rate |
-| Supporting metrics | Engagement, Duration Played, Premium Rate |
+| Size | 885,129 rows × 9 columns |
+| Columns | `event_time`, `event_type`, `product_id`, `category_id`, `category_code`, `brand`, `price`, `user_id`, `user_session` |
+| Event types | `view`, `cart`, `purchase` |
+| Coverage | ~407K users, ~53K products, ~490K sessions |
+| Period | Sep 24, 2020 – Feb 28, 2021 |
+| Time zone | UTC |
 
-**Experiment variables**
-
-| Variable | Description |
-|---|---|
-| Group | Control or Target |
-| Engagement | Engagement score (0–1) |
-| Duration Played | Listening time in minutes |
-| Payment | Payment conversion (binary) |
-| Subscription | Subscription tier (Free / Premium) |
-
-With 50,000 users per group, the sample size far exceeds what is needed to detect small differences at 5% significance and 80% power, so confidence intervals are narrow.
+**Data quality issues found**
+- **655 duplicate rows**
+- **162 rows** with missing `user_session`
+- `category_code` missing in ~27% of rows and `brand` in ~24%
+- Extreme prices (maximum 64,771)
 
 ### 3.2 Data Preprocessing
 
-- Loaded both CSV files and inspected structure, data types, and group balance (50:50).
-- Checked for missing values and duplicates.
-- Derived binary indicators for Payment and Premium so they could be analyzed as proportions.
-- For the monitoring data, parsed dates and split the period into **Week 1 (1–7 Mar)** as the pre-implementation baseline and **Week 2 (8–14 Mar)** as the post-implementation period.
+| No | Step | Description |
+|---|---|---|
+| 1 | Remove duplicates | 655 duplicate rows dropped |
+| 2 | Convert time | `event_time` converted to datetime (UTC) |
+| 3 | Handle missing values | Rows without `user_session` dropped; missing `category_code` and `brand` filled with `unknown` |
+| 4 | Split hierarchical category | `category_code` split into `cat1`, `cat2`, `cat3` |
+| 5 | Time feature engineering | Created `date`, `month`, `hour`, `dow` (day of week) columns |
+| 6 | Convert ID types | `product_id`, `category_id`, `user_id` cast to string |
+| 7 | Flag price outliers | Prices above the 99.9th percentile flagged (`is_outlier_price`), **not removed**, to avoid biasing revenue |
+| 8 | Save clean data | Final dataset of **884,312 rows** |
+
+> **Note:** September 2020 only contains data from September 24 onward, so that month is partial and not directly comparable to other months.
 
 ### 3.3 Analysis and Insights
 
-**Methods**
-- Welch's t-test for continuous metrics (Engagement, Duration Played)
-- Two-proportion z-test for binary metrics (Payment, Premium)
-- Cohen's d for effect size
-- Segment check by subscription tier to rule out confounding
-- Linear regression for the post-implementation Total Users trend
+**Technique:** descriptive and exploratory analysis (funnel, category, price, brand, time patterns). Conversion formulas used:
 
-**A/B Test Results**
+- **View → Cart (v2c)** = cart count / view count
+- **Cart → Purchase (c2p)** = purchase count / cart count
+- **View → Purchase (v2p)** = purchase count / view count
 
-<img width="1171" height="602" alt="Screenshot 2026-10-26 115143" src="https://github.com/user-attachments/assets/e3d8c3f2-17ef-4bff-8862-7107fcd373ab" />
+#### 🔹 Funnel and Category
+- Of **406.82K** users who viewed products, only **36.95K (9.1%)** added to cart and **21.30K (5.2%)** ultimately purchased.
+- By events: 792.94K views → 54.03K carts → 37.34K purchases. **View → purchase is only 4.7%.**
+- **The biggest drop occurs at the view → cart stage.**
+- Categories with the weakest v2c: **apparel (0.85%)**, **country_yard (1.37%)**, and **medicine (2.79%)**.
+- Above-average categories: **computers (9.89%)** and **stationery (8.79%)**; below average: electronics (5.84%), furniture (5.04%), construction (4.75%).
 
-| Metric | Control | Target | Difference | p-value | Conclusion |
-|---|---|---|---|---|---|
-| Engagement (mean) | 0.600 | 0.800 | +0.200 (+33.3%) | < 0.001 | Significant |
-| Duration Played (min) | 120.1 | 159.9 | +39.8 (+33.2%) | < 0.001 | Significant |
-| Payment Rate | 69.7% | 79.8% | +10.1 pp (+14.5%) | < 0.001 | Significant |
-| Premium Rate | 59.7% | 80.3% | +20.5 pp (+34.4%) | < 0.001 | Significant |
+#### 🔹 Price Effect
+Prices were divided into 5 buckets (quintiles): <21, 21–47, 47–96, 96–227, >227.
 
-**Insights**
-- H0 is rejected for all four metrics.
-- Effect sizes are large (Cohen's d ≈ 2.0 for Engagement, ≈ 1.3 for Duration Played), so the difference is meaningful in practice, not just statistically.
-- The Payment Rate lift holds in both tiers: Target reaches 79.9% for Free and 79.8% for Premium users, versus about 69.5–69.9% in Control. The gain is a real effect of the variant, not a subscription-tier composition effect.
-- Engagement and Duration Played rise together with conversion, which suggests that more relevant personalization drives users to listen more and then pay.
+| Price range | View → Cart | Cart → Purchase |
+|---|:--:|:--:|
+| 1. Very cheap (<21) | 5.75% | 79.00% |
+| 2. Cheap (21–47) | 6.40% | 81.03% |
+| 3. Medium (47–96) | 5.88% | 69.75% |
+| 4. Expensive (96–227) | 7.46% | 65.98% |
+| 5. Very expensive (>227) | 8.63% | 55.63% |
 
-**Post-Implementation Monitoring**
+**Insight:** the more expensive a product, the more often it is added to the cart, but the less often it is bought. The barrier for expensive products lies in the **final decision (checkout)**, not in interest.
 
-<img width="889" height="419" alt="image" src="https://github.com/user-attachments/assets/67d36725-5604-490b-b3ba-e81d7617d87a" />
+#### 🔹 Time Patterns
+- View → purchase conversion peaks at around **10:00 UTC (5.38%)** and is lowest at **01:00 UTC (3.61%)**.
+- In the afternoon, traffic is high but conversion declines.
+- **The monthly trend rises steadily** from **4.29% (Oct 2020)** to **5.17% (Feb 2021)**.
 
-| Period | Avg. Users/Day | Change |
-|---|---|---|
-| Week 1 (1–7 Mar) | 16,184 | baseline |
-| Week 2 (8–14 Mar) | 24,670 | **+52.4%** |
+#### 🔹 Brand
+- **Most effective:** sapphire (v2p 11.44%), msi (8.97%), gigabyte (7.65%). msi also generates the highest revenue among identified brands (~643K).
+- **High traffic, low conversion:** asus (24K views, v2p 5.20%) and palit (21K views, v2p 5.02%, c2p only 48.06%).
+- The **unknown** brand accounts for ~190K views (the largest share) with v2p of 5.00%, making many products hard to analyze and optimize.
 
-- The linear trend shows an increase of about +871 users/day (R² = 0.58, p = 0.0009).
-- Saturday, historically the weakest day, became one of the strongest in Week 2 (26,207 users on 14 Mar vs 11,660 on 7 Mar), so the rise is more than normal weekly fluctuation.
-- The direction agrees with the A/B test result.
+#### 🔹 Power BI Dashboard
+A one-page dashboard containing KPIs (Total Users and Revenue), funnel, monthly trend, hourly pattern, conversion by price, category, and brand. It includes **Brand, Category, DayName, and Month** filters to drill into segments.
 
-**Limitations**
-- The full-rollout date (8 March 2026) is an analytical assumption.
-- 15 days is short and cannot rule out a novelty effect.
-- The before/after comparison cannot fully exclude external factors such as concurrent campaigns.
-- Guardrail metrics (churn, complaints, server load) are not covered by this data.
+---
 
 ## 4. Recommendations and Actionable Insights
 
-1. **Roll out the Target variant to all users permanently.** All four metrics improved significantly, and post-implementation data points the same way.
-2. **Prioritize onboarding and communication for Free-tier users.** Target lifts Premium Rate by +20.5 pp (59.7% → 80.3%), so messaging that highlights the new personalization can accelerate Free-to-Premium conversion.
-3. **Report Payment Rate (+10.1 pp, +14.5% relative) as the primary metric to stakeholders.** It is the closest to revenue, while Engagement and Duration Played explain why conversion rises.
-4. **Keep monitoring for at least 4–8 weeks** to confirm the lift is sustained, and add guardrail metrics: churn rate, user complaints, and server load.
-5. **Verify no other campaigns or promotions ran in early March 2026**, so the Total Users increase can be attributed to the Target feature.
-6. **Track long-term downstream metrics** such as retention, customer lifetime value, and user satisfaction.
+| No | Recommendation | Action | Target / Impact |
+|:--:|---|---|---|
+| 1 | **Improve product pages** | Complete photos, specifications, and reviews for below-average categories (electronics, furniture, construction, plus apparel and country_yard); fill in missing catalog data so it displays | View → cart up from 6.8% to 7.5% |
+| 2 | **Address expensive products** | Offer installments, warranty, free shipping, and abandoned cart reminders | Cart → purchase in the most expensive range up from 56% to 65% |
+| 3 | **Schedule promotions by time pattern** | Concentrate campaigns, flash sales, and notifications at **09:00–11:00 UTC**; use time-limited promos in the afternoon; reduce ads in the early morning | More efficient and better-targeted promotions |
+| 4 | **Manage the brand portfolio** | Maintain stock and pricing for msi, gigabyte, sapphire; investigate the cause of palit's low c2p; review weak-converting brands such as asus | Strengthen effective brands, fix weak ones |
+| 5 | **Clean up catalog data** | Make brand and category fields mandatory (~a quarter of data is empty) | More accurate analysis and recommendations |
 
-## 🛠️ Tech Stack
+**Business impact:** improvement priorities become clear, promotions are better targeted, and dependence on a single category (*computers*, ~73% of revenue) can be reduced.
 
-Python · Pandas · NumPy · SciPy · Statsmodels · Matplotlib · Jupyter Notebook / Google Colab
+---
 
-## 📁 Repository Structure
+## 5. Tech Stack
+
+- **Python** (Pandas, NumPy, Matplotlib, Seaborn, Plotly) on Google Colab, for cleaning and EDA
+- **Power BI**, for the interactive dashboard
+- **PowerPoint**, for presenting results
+
+---
+
+## 6. Repository Structure
 
 ```
-├── data/
-│   ├── spotify_campaign_data.csv
-│   └── AB_Test_Post_Implement.csv
-├── notebook/
-│   └── AB testing analysis of a Spotify personalization feature.ipynb
-└── README.md
+├── README.md
+├── Analisis_Funnel_E_Commerce.ipynb         # Cleaning & EDA notebook
+├── Analisis_Funnel_Ecommerce_Fatih.pptx     # Presentation slides
+├── Dashboard_Analisis_Funnel_E-commerce.png # Dashboard preview
+└── data/                                    # (optional) events.csv
 ```
 
-## 👤 Author
+---
 
-**Fatih Putra Maulana**
+## 7. Author
+
+**Fatih Putra M.**
+Fresh Graduate in Geophysical Engineering (ITERA) | Aspiring Data Analyst
+
+- LinkedIn: https://www.linkedin.com/in/fatihputramaulana/
+- Email: fatihpm56@gmail.com
